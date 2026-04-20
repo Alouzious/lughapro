@@ -1,2 +1,5 @@
-// Auth module: JWT-based authentication and role management.
-// Future: login, register, token refresh, role guards.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;

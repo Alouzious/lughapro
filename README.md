@@ -128,44 +128,39 @@ The frontend will be available at `http://localhost:5173`.
 
 ## What's Included in This MVP
 
+- **JWT authentication** — register, login, role-based access (student / tutor / admin)
+- **Protected routes** — frontend route guards based on auth state and role
+- **Tutor profiles** — create, view, and update tutor profiles with hourly rate, bio, expertise
+- **Tutor listing** — live data from the API with pagination
+- **Bookings** — students book sessions with tutors; tutors confirm, complete, or cancel
+- **Ratings** — students rate completed sessions (1–5 stars) with optional review text
+- **AuthContext** — React context for auth state, persisted to localStorage
+- **Dashboard pages** — real-time data: student bookings, tutor session management
 - **Backend scaffold** with layered architecture (config, state, routes, handlers, services, repositories, models, schemas, middleware, utils, errors)
-- **Module placeholders** for: auth, users, tutors, bookings, payments, ratings, certificates, tokens, ai, blockchain, disputes
+- **Module placeholders** for future: payments, certificates, tokens, ai, blockchain, disputes
 - **Frontend scaffold** with Tailwind CSS and Lucide React icons
-- **Landing page** — professional hero, feature cards, stats, and CTA
-- **Login page** — clean form with icon inputs
-- **Register page** — role selector (Student / Tutor) + form
-- **Tutor listing page** — searchable tutor cards with ratings
-- **Student dashboard shell** — stats cards and session list
-- **Tutor dashboard shell** — earnings, session, and rating stats
-- **Admin dashboard shell** — platform overview with alert indicators
-- **Responsive navbar** with mobile menu
-- **Sidebar dashboard layout** with navigation links
+- **Landing page**, Login, Register, Tutor Listing, Dashboards, Booking Form, Rating Form, Tutor Profile Page
 - **Axios API client** with auth token interceptors
-- **Environment configuration** for both frontend and backend
-- **Secure gitignore** — `.env` files are never committed
+- **Database migrations** for users, tutor_profiles, bookings, ratings tables
 
 ---
 
-## Planned Future Modules
+## API Endpoints
 
-| Module | Description |
-|--------|-------------|
-| Auth | JWT login, registration, role-based access control |
-| Users | Profile management, avatar upload |
-| Tutors | Tutor onboarding, profile verification, availability |
-| Bookings | Session scheduling, confirmation, cancellation |
-| Payments | Stellar Soroban escrow, custodial wallets, refunds |
-| Ratings | Post-session reviews and reputation scores |
-| Certificates | Blockchain-verified completion certificates |
-| Tokens | LughaPro token rewards and redemption |
-| AI | Groq-powered AI tutor assistant |
-| Blockchain | Stellar Soroban smart contract integration |
-| Disputes | Session dispute resolution and admin mediation |
+| Method | Path | Auth Required | Description |
+|--------|------|---------------|-------------|
+| GET | `/health` | No | Server health check |
+| GET | `/health/db` | No | Database connectivity status |
+| POST | `/api/auth/register` | No | Register a new user |
+| POST | `/api/auth/login` | No | Login and receive JWT token |
+| GET | `/api/tutors` | No | List all tutors (paginated) |
+| POST | `/api/tutors/profile` | Tutor | Create tutor profile |
+| GET | `/api/tutors/profile` | Tutor | Get own tutor profile |
+| PATCH | `/api/tutors/profile` | Tutor | Update tutor profile |
+| GET | `/api/tutors/:id/ratings` | No | Get ratings for a tutor |
+| GET | `/api/tutors/:id/average-rating` | No | Get average rating for a tutor |
+| POST | `/api/bookings` | Student | Create a booking |
+| GET | `/api/bookings/me` | Any | Get own bookings |
+| PATCH | `/api/bookings/:id/status` | Any | Update booking status |
+| POST | `/api/ratings` | Student | Submit a rating for a completed session |
 
----
-
-## Development Notes
-
-- The backend does **not** panic if `DATABASE_URL` is missing — it logs a warning and starts without a DB connection. This makes local development and health checks possible without a database.
-- All secrets must be placed in `.env` files which are gitignored. Never commit real credentials.
-- The frontend uses the `VITE_` prefix for all environment variables as required by Vite.

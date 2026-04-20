@@ -7,6 +7,7 @@ pub struct AppConfig {
     pub app_env: String,
     pub log_level: String,
     pub jwt_secret: String,
+    pub jwt_expiry_hours: i64,
     pub groq_api_key: Option<String>,
     pub stellar_network: Option<String>,
     pub stellar_rpc_url: Option<String>,
@@ -26,6 +27,10 @@ impl AppConfig {
             log_level: env::var("LOG_LEVEL").unwrap_or_else(|_| "info".to_string()),
             jwt_secret: env::var("JWT_SECRET")
                 .unwrap_or_else(|_| "changeme-dev-secret-not-for-production".to_string()),
+            jwt_expiry_hours: env::var("JWT_EXPIRY_HOURS")
+                .unwrap_or_else(|_| "24".to_string())
+                .parse()
+                .unwrap_or(24),
             groq_api_key: env::var("GROQ_API_KEY").ok(),
             stellar_network: env::var("STELLAR_NETWORK").ok(),
             stellar_rpc_url: env::var("STELLAR_RPC_URL").ok(),

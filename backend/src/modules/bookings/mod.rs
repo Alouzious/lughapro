@@ -1,2 +1,5 @@
-// Bookings module: session scheduling between students and tutors.
-// Future: create, confirm, cancel, reschedule bookings; escrow payment triggers.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;
