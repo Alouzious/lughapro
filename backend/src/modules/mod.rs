@@ -9,3 +9,4 @@ pub mod tokens;
 pub mod ai;
 pub mod blockchain;
 pub mod disputes;
+pub mod admin;

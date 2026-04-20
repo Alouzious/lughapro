@@ -1,2 +1,5 @@
-// Users module: user profile management for Students, Tutors, and Admins.
-// Future: CRUD operations, profile updates, avatar management.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;

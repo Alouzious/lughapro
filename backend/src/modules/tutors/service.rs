@@ -27,6 +27,10 @@ impl TutorService {
             req.hourly_rate,
             req.availability_summary.as_deref(),
             req.expertise.as_deref(),
+            req.profile_image_url.as_deref(),
+            req.phone.as_deref(),
+            req.location.as_deref(),
+            req.teaching_focus.as_deref(),
         ).await?;
         info!("Tutor profile created for user {}", user_id);
         Ok(serde_json::to_value(profile).unwrap())
@@ -51,6 +55,10 @@ impl TutorService {
             req.hourly_rate,
             req.availability_summary.as_deref(),
             req.expertise.as_deref(),
+            req.profile_image_url.as_deref(),
+            req.phone.as_deref(),
+            req.location.as_deref(),
+            req.teaching_focus.as_deref(),
         ).await?
         .ok_or_else(|| AppError::NotFound("Tutor profile not found".to_string()))?;
         Ok(serde_json::to_value(profile).unwrap())
@@ -60,9 +68,10 @@ impl TutorService {
         let page = query.page.unwrap_or(1).max(1);
         let limit = query.limit.unwrap_or(10).min(100).max(1);
         let offset = (page - 1) * limit;
+        let vs = query.verification_status.as_deref();
 
-        let tutors = TutorRepository::list(pool, limit, offset).await?;
-        let total = TutorRepository::count(pool).await?;
+        let tutors = TutorRepository::list(pool, limit, offset, vs).await?;
+        let total = TutorRepository::count(pool, vs).await?;
 
         Ok(TutorListResponse {
             tutors: tutors.into_iter().map(|t| TutorListItem {
@@ -72,11 +81,23 @@ impl TutorService {
                 hourly_rate: t.hourly_rate,
                 availability_summary: t.availability_summary,
                 expertise: t.expertise,
+                verification_status: t.verification_status,
+                profile_image_url: t.profile_image_url,
                 average_rating: t.average_rating,
             }).collect(),
             total,
             page,
             limit,
         })
+    }
+
+    pub async fn update_verification_status(pool: &PgPool, user_id: Uuid, status: &str) -> AppResult<serde_json::Value> {
+        let valid = ["pending_review", "verified", "rejected", "suspended"];
+        if !valid.contains(&status) {
+            return Err(AppError::BadRequest(format!("Invalid verification status: {}", status)));
+        }
+        let profile = TutorRepository::update_verification_status(pool, user_id, status).await?
+            .ok_or_else(|| AppError::NotFound("Tutor profile not found".to_string()))?;
+        Ok(serde_json::to_value(profile).unwrap())
     }
 }
