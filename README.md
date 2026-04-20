@@ -128,20 +128,45 @@ The frontend will be available at `http://localhost:5173`.
 
 ## What's Included in This MVP
 
+### Core Platform
 - **JWT authentication** — register, login, role-based access (student / tutor / admin)
 - **Protected routes** — frontend route guards based on auth state and role
-- **Tutor profiles** — create, view, and update tutor profiles with hourly rate, bio, expertise
-- **Tutor listing** — live data from the API with pagination
+- **Role-aware navigation** — navbar and sidebar adapt per user role (student / tutor / admin)
+
+### Profiles
+- **Tutor profiles** — create, view, and update with hourly rate, bio, expertise, availability, photo URL, phone, location, teaching focus
+- **Student profiles** — editable profiles with bio, learning goals, learning level, photo URL, phone, location
+- **Tutor verification workflow** — states: `pending_review`, `verified`, `rejected`, `suspended`
+
+### Bookings & Sessions
 - **Bookings** — students book sessions with tutors; tutors confirm, complete, or cancel
 - **Ratings** — students rate completed sessions (1–5 stars) with optional review text
+
+### Payment System (Off-Chain Foundation)
+- **Payment records** — each booking can have a payment record (amount, currency, status, reference ID)
+- **Escrow-ready model** — payment fields: `funds_locked`, `ready_for_release`, `released`, `refund_pending`
+- **Payment statuses** — `pending`, `paid`, `failed`, `refunded`
+- Designed for future Stellar Soroban escrow integration without major refactoring
+
+### Dispute System
+- **Disputes** — student or tutor can raise a dispute linked to a booking
+- **Dispute statuses** — `open`, `under_review`, `resolved`
+- Admin can view and update dispute status
+
+### Admin Management
+- **Admin dashboard** — real-time platform stats (users, tutors, students, bookings, payments, disputes)
+- **User management** — view all users filtered by role
+- **Tutor management** — verify, reject, or suspend tutors
+- **Bookings, payments, disputes** — full admin visibility
+
+### Tutor Discovery
+- Tutors can view fellow tutors on the platform via "Fellow Tutors" page
+
+### Frontend
 - **AuthContext** — React context for auth state, persisted to localStorage
-- **Dashboard pages** — real-time data: student bookings, tutor session management
-- **Backend scaffold** with layered architecture (config, state, routes, handlers, services, repositories, models, schemas, middleware, utils, errors)
-- **Module placeholders** for future: payments, certificates, tokens, ai, blockchain, disputes
-- **Frontend scaffold** with Tailwind CSS and Lucide React icons
-- **Landing page**, Login, Register, Tutor Listing, Dashboards, Booking Form, Rating Form, Tutor Profile Page
-- **Axios API client** with auth token interceptors
-- **Database migrations** for users, tutor_profiles, bookings, ratings tables
+- **Premium UI** — Tailwind CSS only, Lucide React icons, no emojis
+- **Loading & empty states** — consistent across all pages
+- **Modular services** — tutorService, bookingService, paymentService, disputeService, adminService, userService
 
 ---
 
@@ -153,7 +178,9 @@ The frontend will be available at `http://localhost:5173`.
 | GET | `/health/db` | No | Database connectivity status |
 | POST | `/api/auth/register` | No | Register a new user |
 | POST | `/api/auth/login` | No | Login and receive JWT token |
-| GET | `/api/tutors` | No | List all tutors (paginated) |
+| GET | `/api/users/me` | Any | Get current user profile |
+| PATCH | `/api/users/me` | Any | Update current user profile |
+| GET | `/api/tutors` | No | List tutors (paginated) |
 | POST | `/api/tutors/profile` | Tutor | Create tutor profile |
 | GET | `/api/tutors/profile` | Tutor | Get own tutor profile |
 | PATCH | `/api/tutors/profile` | Tutor | Update tutor profile |
@@ -163,4 +190,44 @@ The frontend will be available at `http://localhost:5173`.
 | GET | `/api/bookings/me` | Any | Get own bookings |
 | PATCH | `/api/bookings/:id/status` | Any | Update booking status |
 | POST | `/api/ratings` | Student | Submit a rating for a completed session |
+| POST | `/api/payments` | Any | Create a payment record for a booking |
+| GET | `/api/payments/me` | Any | Get own payment records |
+| GET | `/api/payments/booking/:id` | Any | Get payment for a specific booking |
+| POST | `/api/disputes` | Any | Raise a dispute for a booking |
+| GET | `/api/disputes/me` | Any | Get own disputes |
+| PATCH | `/api/disputes/:id/status` | Admin | Update dispute status |
+| GET | `/api/admin/stats` | Admin | Platform statistics |
+| GET | `/api/admin/users` | Admin | List all users (paginated) |
+| GET | `/api/admin/tutors` | Admin | List all tutors (paginated) |
+| GET | `/api/admin/students` | Admin | List all students (paginated) |
+| GET | `/api/admin/bookings` | Admin | List all bookings (paginated) |
+| GET | `/api/admin/payments` | Admin | List all payments (paginated) |
+| GET | `/api/admin/disputes` | Admin | List all disputes (paginated) |
+| PATCH | `/api/admin/tutors/:id/verification` | Admin | Update tutor verification status |
+
+---
+
+## Database Migrations
+
+| File | Description |
+|------|-------------|
+| `001_create_users.sql` | Users table |
+| `002_create_tutor_profiles.sql` | Tutor profiles table |
+| `003_create_bookings.sql` | Bookings table |
+| `004_create_ratings.sql` | Ratings table |
+| `005_extend_tutor_profiles.sql` | Add verification status, photo URL, phone, location, teaching focus |
+| `006_extend_users.sql` | Add phone, location, photo URL, bio, learning goals, learning level |
+| `007_create_payments.sql` | Payments table with escrow-ready fields |
+| `008_create_disputes.sql` | Disputes table |
+
+---
+
+## Future Integrations
+
+The codebase is structured for these future additions without major refactoring:
+
+- **Stellar Soroban escrow** — payment model has `funds_locked`, `ready_for_release`, `released`, `refund_pending` fields ready
+- **Groq AI tutor assistant** — `ai` module scaffold exists
+- **Blockchain certificates** — `certificates` module scaffold exists
+- **Token rewards** — `tokens` module scaffold exists
 
