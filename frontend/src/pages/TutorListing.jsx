@@ -116,7 +116,7 @@ export default function TutorListing() {
                 Previous
               </button>
               <span className="px-4 py-2 text-sm text-gray-600">Page {page}</span>
-              <button onClick={() => setPage(p => p + 1)} disabled={tutors.length < 12}
+              <button onClick={() => setPage(p => p + 1)} disabled={page * 12 >= total}
                 className="px-4 py-2 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50 transition-colors">
                 Next
               </button>
