@@ -1,42 +1,59 @@
-use axum::{routing::get, Router};
+mod config;
+mod state;
+mod routes;
+mod handlers;
+mod services;
+mod repositories;
+mod models;
+mod schemas;
+mod middleware;
+mod utils;
+mod errors;
+mod modules;
+
 use dotenvy::dotenv;
 use sqlx::PgPool;
-use std::{env, net::SocketAddr};
-
-async fn health() -> &'static str {
-    "API is running"
-}
-
-async fn db_health() -> &'static str {
-    "Database connection is configured"
-}
+use tracing::{info, warn};
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
 
-    let database_url =
-        env::var("DATABASE_URL").expect("DATABASE_URL must be set in .env");
+    let config = config::AppConfig::from_env();
 
-    let pool = PgPool::connect(&database_url)
-        .await
-        .expect("Failed to connect to database");
+    tracing_subscriber::fmt()
+        .with_env_filter(&config.log_level)
+        .init();
 
-    println!("Connected to Neon PostgreSQL");
+    info!("Starting LughaPro API in {} mode", config.app_env);
 
-    let app = Router::new()
-        .route("/health", get(health))
-        .route("/health/db", get(db_health))
-        .with_state(pool);
+    // Attempt database connection; the server starts regardless.
+    let db_pool = match &config.database_url {
+        Some(url) => match PgPool::connect(url).await {
+            Ok(pool) => {
+                info!("Connected to PostgreSQL database");
+                Some(pool)
+            }
+            Err(err) => {
+                warn!("Database connection failed: {}. Running without database.", err);
+                None
+            }
+        },
+        None => {
+            warn!("DATABASE_URL not set. Running without database connection.");
+            None
+        }
+    };
 
-    let port: u16 = env::var("PORT")
-        .unwrap_or_else(|_| "8000".to_string())
-        .parse()
-        .expect("PORT must be a valid number");
+    let app_state = state::AppState::new(config.clone(), db_pool);
+    let app = routes::create_router(app_state);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    println!("Backend running on http://{}", addr);
+    let addr = format!("0.0.0.0:{}", config.port);
+    info!("LughaPro API listening on http://{}", addr);
 
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(&addr).await
+        .expect("Failed to bind to address");
+
+    axum::serve(listener, app).await
+        .expect("Server failed");
 }
