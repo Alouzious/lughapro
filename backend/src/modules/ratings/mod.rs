@@ -1,2 +1,5 @@
-// Ratings module: post-session reviews and reputation scoring.
-// Future: submit rating, aggregate scores, display on tutor profiles.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;

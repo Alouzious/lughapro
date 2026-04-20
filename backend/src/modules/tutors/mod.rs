@@ -1,2 +1,5 @@
-// Tutors module: tutor marketplace, profiles, availability, and search.
-// Future: tutor onboarding, profile verification, search/filter endpoints.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;
