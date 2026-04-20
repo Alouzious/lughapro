@@ -1,6 +1,7 @@
-import { Users, Calendar, Star, TrendingUp, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { Users, Calendar, Star, TrendingUp, Loader2, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { bookingService } from '../features/bookings/bookingService';
+import { tutorService } from '../features/tutors/tutorService';
 import { useAuth } from '../context/AuthContext';
 
 const statusColors = {
@@ -10,17 +11,57 @@ const statusColors = {
   cancelled: 'bg-gray-100 text-gray-500',
 };
 
+const verificationBanners = {
+  verified: {
+    bg: 'bg-green-50 border-green-200',
+    iconColor: 'text-green-600',
+    text: 'text-green-800',
+    label: 'Verified Tutor',
+    message: 'Your profile has been verified. You are visible to students.',
+    icon: '✓',
+  },
+  pending_review: {
+    bg: 'bg-yellow-50 border-yellow-200',
+    iconColor: 'text-yellow-600',
+    text: 'text-yellow-800',
+    label: 'Pending Review',
+    message: 'Your profile is under review. You will be notified once verified.',
+    icon: '⏳',
+  },
+  rejected: {
+    bg: 'bg-red-50 border-red-200',
+    iconColor: 'text-red-600',
+    text: 'text-red-800',
+    label: 'Verification Rejected',
+    message: 'Your verification was rejected. Please contact support for more information.',
+    icon: '✗',
+  },
+  suspended: {
+    bg: 'bg-gray-100 border-gray-300',
+    iconColor: 'text-gray-500',
+    text: 'text-gray-700',
+    label: 'Account Suspended',
+    message: 'Your account has been suspended. Please contact support.',
+    icon: '⊘',
+  },
+};
+
 export default function TutorDashboard() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updating, setUpdating] = useState(null);
+  const [verificationStatus, setVerificationStatus] = useState(null);
 
   useEffect(() => {
-    bookingService.getMyBookings()
-      .then(data => setBookings(Array.isArray(data) ? data : []))
-      .catch(() => setError('Failed to load bookings.'))
+    Promise.all([
+      bookingService.getMyBookings().then(data => setBookings(Array.isArray(data) ? data : [])),
+      tutorService.getProfile()
+        .then(profile => setVerificationStatus(profile.verification_status || 'pending_review'))
+        .catch(() => setVerificationStatus('pending_review')),
+    ])
+      .catch(() => setError('Failed to load dashboard data.'))
       .finally(() => setLoading(false));
   }, []);
 
@@ -30,7 +71,7 @@ export default function TutorDashboard() {
       const updated = await bookingService.updateStatus(bookingId, status);
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, ...updated } : b));
     } catch {
-      // silently fail - could add toast here
+      // silently fail
     } finally {
       setUpdating(null);
     }
@@ -40,12 +81,24 @@ export default function TutorDashboard() {
   const completed = bookings.filter(b => b.status === 'completed');
   const uniqueStudents = new Set(bookings.map(b => b.student_id)).size;
 
+  const banner = verificationStatus ? verificationBanners[verificationStatus] : null;
+
   return (
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Tutor Dashboard</h1>
         <p className="text-gray-500 text-sm mt-1">Welcome back{user?.full_name ? `, ${user.full_name.split(' ')[0]}` : ''}</p>
       </div>
+
+      {banner && (
+        <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${banner.bg}`}>
+          <span className={`text-lg mt-0.5 flex-shrink-0 ${banner.iconColor}`}>{banner.icon}</span>
+          <div>
+            <p className={`text-sm font-semibold ${banner.text}`}>{banner.label}</p>
+            <p className={`text-xs mt-0.5 ${banner.text} opacity-80`}>{banner.message}</p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-xl border border-gray-100 p-5">
