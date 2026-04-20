@@ -1,2 +1,5 @@
-// Disputes module: session dispute resolution and refund management.
-// Future: raise dispute, admin review, auto-refund via Soroban escrow.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;

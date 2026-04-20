@@ -1,2 +1,5 @@
-// Payments module: payment processing with Stellar Soroban escrow.
-// Future: custodial wallet management, escrow creation, release, refunds.
+pub mod models;
+pub mod schemas;
+pub mod repository;
+pub mod service;
+pub mod handler;

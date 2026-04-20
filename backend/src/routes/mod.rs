@@ -2,10 +2,14 @@ use axum::{routing::{get, patch, post}, Router};
 use tower_http::cors::{Any, CorsLayer};
 use crate::handlers::health;
 use crate::modules::{
+    admin::handler as admin_handler,
     auth::handler as auth_handler,
     bookings::handler as booking_handler,
+    disputes::handler as dispute_handler,
+    payments::handler as payment_handler,
     ratings::handler as rating_handler,
     tutors::handler as tutor_handler,
+    users::handler as user_handler,
 };
 use crate::state::AppState;
 
@@ -35,6 +39,30 @@ pub fn create_router(state: AppState) -> Router {
     let rating_routes = Router::new()
         .route("/", post(rating_handler::create_rating));
 
+    let user_routes = Router::new()
+        .route("/me", get(user_handler::get_me))
+        .route("/me", patch(user_handler::update_me));
+
+    let payment_routes = Router::new()
+        .route("/", post(payment_handler::create_payment))
+        .route("/me", get(payment_handler::list_my_payments))
+        .route("/booking/:booking_id", get(payment_handler::get_payment_for_booking));
+
+    let dispute_routes = Router::new()
+        .route("/", post(dispute_handler::create_dispute))
+        .route("/me", get(dispute_handler::get_my_disputes))
+        .route("/:id/status", patch(dispute_handler::update_dispute_status));
+
+    let admin_routes = Router::new()
+        .route("/users", get(admin_handler::list_users))
+        .route("/tutors", get(admin_handler::list_tutors))
+        .route("/students", get(admin_handler::list_students))
+        .route("/bookings", get(admin_handler::list_all_bookings))
+        .route("/payments", get(admin_handler::list_all_payments))
+        .route("/disputes", get(admin_handler::list_all_disputes))
+        .route("/tutors/:id/verification", patch(admin_handler::update_tutor_verification))
+        .route("/stats", get(admin_handler::get_stats));
+
     Router::new()
         .route("/health", get(health::health_check))
         .route("/health/db", get(health::health_db))
@@ -42,6 +70,10 @@ pub fn create_router(state: AppState) -> Router {
         .nest("/api/tutors", tutor_routes)
         .nest("/api/bookings", booking_routes)
         .nest("/api/ratings", rating_routes)
+        .nest("/api/users", user_routes)
+        .nest("/api/payments", payment_routes)
+        .nest("/api/disputes", dispute_routes)
+        .nest("/api/admin", admin_routes)
         .layer(cors)
         .with_state(state)
 }

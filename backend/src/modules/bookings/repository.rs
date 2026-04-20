@@ -78,4 +78,31 @@ impl BookingRepository {
         .await?;
         Ok(booking)
     }
+
+    pub async fn find_all(pool: &PgPool, limit: i64, offset: i64) -> AppResult<Vec<BookingWithNames>> {
+        let bookings = sqlx::query_as::<_, BookingWithNames>(
+            r#"SELECT
+                b.id, b.student_id, b.tutor_id,
+                su.full_name AS student_name,
+                tu.full_name AS tutor_name,
+                b.session_time, b.status, b.notes, b.created_at, b.updated_at
+            FROM bookings b
+            JOIN users su ON su.id = b.student_id
+            JOIN users tu ON tu.id = b.tutor_id
+            ORDER BY b.session_time DESC
+            LIMIT $1 OFFSET $2"#
+        )
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(pool)
+        .await?;
+        Ok(bookings)
+    }
+
+    pub async fn count_all(pool: &PgPool) -> AppResult<i64> {
+        let row: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM bookings")
+            .fetch_one(pool)
+            .await?;
+        Ok(row.0)
+    }
 }

@@ -4,30 +4,41 @@ import {
   LayoutDashboard,
   Users,
   Calendar,
-  Star,
   Settings,
   LogOut,
   UserCircle,
+  CreditCard,
+  AlertCircle,
+  BookOpen as GraduationCap,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const studentNav = [
   { to: '/student/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tutors', icon: Users, label: 'Find Tutors' },
+  { to: '/student/bookings', icon: Calendar, label: 'My Bookings' },
+  { to: '/student/profile', icon: UserCircle, label: 'Profile' },
   { to: '/student/settings', icon: Settings, label: 'Settings' },
 ];
 
 const tutorNav = [
   { to: '/tutor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tutor/profile', icon: UserCircle, label: 'My Profile' },
-  { to: '/student/settings', icon: Settings, label: 'Settings' },
+  { to: '/tutor/fellow-tutors', icon: Users, label: 'Fellow Tutors' },
+  { to: '/tutor/sessions', icon: Calendar, label: 'My Sessions' },
+  { to: '/tutor/earnings', icon: CreditCard, label: 'Earnings' },
+  { to: '/tutor/settings', icon: Settings, label: 'Settings' },
 ];
 
 const adminNav = [
-  { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/tutors', icon: Users, label: 'Tutors' },
+  { to: '/admin/dashboard', icon: LayoutDashboard, label: 'Admin Dashboard' },
+  { to: '/admin/users', icon: Users, label: 'Users' },
+  { to: '/admin/tutors', icon: GraduationCap, label: 'Tutors' },
+  { to: '/admin/students', icon: UserCircle, label: 'Students' },
   { to: '/admin/bookings', icon: Calendar, label: 'Bookings' },
-  { to: '/admin/ratings', icon: Star, label: 'Ratings' },
+  { to: '/admin/payments', icon: CreditCard, label: 'Payments' },
+  { to: '/admin/disputes', icon: AlertCircle, label: 'Disputes' },
+  { to: '/admin/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function DashboardLayout() {
@@ -53,7 +64,7 @@ export default function DashboardLayout() {
             <span>Lugha<span className="text-blue-600">Pro</span></span>
           </Link>
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}

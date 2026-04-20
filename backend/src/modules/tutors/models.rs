@@ -10,6 +10,11 @@ pub struct TutorProfile {
     pub hourly_rate: f64,
     pub availability_summary: Option<String>,
     pub expertise: Option<String>,
+    pub verification_status: String,
+    pub profile_image_url: Option<String>,
+    pub phone: Option<String>,
+    pub location: Option<String>,
+    pub teaching_focus: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -23,5 +28,7 @@ pub struct TutorListing {
     pub hourly_rate: f64,
     pub availability_summary: Option<String>,
     pub expertise: Option<String>,
+    pub verification_status: String,
+    pub profile_image_url: Option<String>,
     pub average_rating: f64,
 }
