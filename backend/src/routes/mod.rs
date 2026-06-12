@@ -3,9 +3,14 @@ use tower_http::cors::{Any, CorsLayer};
 use crate::handlers::health;
 use crate::modules::{
     admin::handler as admin_handler,
+    ai::handler as ai_handler,
     auth::handler as auth_handler,
     bookings::handler as booking_handler,
+    certificates::handler as certificate_handler,
+    courses::handler as course_handler,
+    credits::handler as credit_handler,
     disputes::handler as dispute_handler,
+    enrollments::handler as enrollment_handler,
     payments::handler as payment_handler,
     ratings::handler as rating_handler,
     tutors::handler as tutor_handler,
@@ -61,7 +66,42 @@ pub fn create_router(state: AppState) -> Router {
         .route("/payments", get(admin_handler::list_all_payments))
         .route("/disputes", get(admin_handler::list_all_disputes))
         .route("/tutors/:id/verification", patch(admin_handler::update_tutor_verification))
+        .route("/courses/:id/approve", post(course_handler::approve_course))
         .route("/stats", get(admin_handler::get_stats));
+
+    let course_routes = Router::new()
+        .route("/", get(course_handler::list_courses).post(course_handler::create_course))
+        .route("/mine", get(course_handler::list_my_courses))
+        .route("/:id", get(course_handler::get_course).patch(course_handler::update_course))
+        .route("/:id/publish", post(course_handler::publish_course))
+        .route("/:id/modules", post(course_handler::add_module))
+        .route("/:id/enroll", post(enrollment_handler::enroll))
+        .route("/:id/progress", get(enrollment_handler::course_progress));
+
+    let module_routes = Router::new()
+        .route("/reorder", patch(course_handler::reorder_modules))
+        .route("/:id", patch(course_handler::update_module).delete(course_handler::delete_module))
+        .route("/:id/complete", post(enrollment_handler::complete_module))
+        .route("/:id/quiz", get(enrollment_handler::get_quiz))
+        .route("/:id/quiz-submit", post(enrollment_handler::submit_quiz))
+        .route("/:id/quiz-result", get(enrollment_handler::quiz_result));
+
+    let enrollment_routes = Router::new()
+        .route("/me", get(enrollment_handler::my_enrollments));
+
+    let credit_routes = Router::new()
+        .route("/me", get(credit_handler::get_my_credits))
+        .route("/history", get(credit_handler::get_history))
+        .route("/sync", post(credit_handler::sync));
+
+    let certificate_routes = Router::new()
+        .route("/me", get(certificate_handler::get_my_certificates))
+        .route("/verify/:tx_hash", get(certificate_handler::verify))
+        .route("/mint", post(certificate_handler::mint));
+
+    let ai_routes = Router::new()
+        .route("/chat", post(ai_handler::chat))
+        .route("/usage", get(ai_handler::usage));
 
     Router::new()
         .route("/health", get(health::health_check))
@@ -74,6 +114,12 @@ pub fn create_router(state: AppState) -> Router {
         .nest("/api/payments", payment_routes)
         .nest("/api/disputes", dispute_routes)
         .nest("/api/admin", admin_routes)
+        .nest("/api/courses", course_routes)
+        .nest("/api/modules", module_routes)
+        .nest("/api/enrollments", enrollment_routes)
+        .nest("/api/credits", credit_routes)
+        .nest("/api/certificates", certificate_routes)
+        .nest("/api/ai", ai_routes)
         .layer(cors)
         .with_state(state)
 }

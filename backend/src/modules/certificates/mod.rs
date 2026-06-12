@@ -1,2 +1,5 @@
-// Certificates module: blockchain-verified completion certificates.
-// Future: issue certificates on Stellar, verify on-chain, PDF generation.
+// Certificates module: blockchain-verified CEFR completion certificates.
+pub mod models;
+pub mod repository;
+pub mod service;
+pub mod handler;

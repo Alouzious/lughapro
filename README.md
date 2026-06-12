@@ -9,9 +9,43 @@
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React 19, Vite, Tailwind CSS, Lucide React, React Router v6 |
-| Backend | Rust, Axum, tokio, sqlx, tracing, tower-http |
+| Backend | Rust, Axum, tokio, sqlx, tracing, tower-http, reqwest |
 | Database | Neon PostgreSQL (via sqlx) |
-| Future | Stellar Soroban (escrow), Groq AI (tutor assistant), JWT auth |
+| Blockchain | Stellar Soroban (4 contracts in `contracts/`) |
+| AI | Anthropic Claude (Groq fallback) Kiswahili tutor |
+
+---
+
+## Learning Platform
+
+Beyond the tutor marketplace, LughaPro is a Cisco-style structured learning platform:
+
+- **Courses → Modules → Quizzes** with sequential unlock and free previews.
+- **Credits & CEFR levels** (A1→C2): earn credits for module/quiz/course/session/AI
+  activity; thresholds unlock the next level (150/300/500/800/1200).
+- **On-chain mirror**: every credit award and level certificate is mirrored to the
+  Stellar `credit_ledger` / `certificate` contracts (simulated tx hashes until the
+  contracts are deployed and addresses configured — see `contracts/README.md`).
+- **AI tutor "Amina"** at `/ai-tutor` with enforced daily free limits.
+- **Course creation** for verified tutors (15% platform fee) and admins
+  ("LughaPro Official").
+
+### New API surface
+
+`/api/courses`, `/api/modules`, `/api/enrollments`, `/api/credits`,
+`/api/certificates`, `/api/ai`, plus `/api/admin/courses/:id/approve`.
+
+### Migrations
+
+New migrations `009`–`015` add courses, modules, quizzes, enrollments, progress,
+credits, certificates and AI usage tables, and seed 4 official free courses
+(owned by a `LughaPro Official` admin account). Apply them in order against your
+`DATABASE_URL` before running the backend.
+
+### Smart contracts
+
+See [`contracts/README.md`](contracts/README.md) for building, testing and
+deploying the four Soroban contracts to testnet.
 
 ---
 

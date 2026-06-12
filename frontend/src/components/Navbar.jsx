@@ -46,6 +46,7 @@ export default function Navbar() {
         <nav style={{ display: 'flex', alignItems: 'center', gap: '2rem' }} className="hidden-mobile">
           {!isAuthenticated && (
             <>
+              <NavLink to="/courses" style={({ isActive }) => navLinkStyle(isActive)}>Courses</NavLink>
               <NavLink to="/tutors" style={({ isActive }) => navLinkStyle(isActive)}>Find Tutors</NavLink>
               <a href="#pricing" style={navLinkStyle(false)}>Pricing</a>
               <NavLink to="/login" style={({ isActive }) => navLinkStyle(isActive)}>Sign In</NavLink>
@@ -54,8 +55,9 @@ export default function Navbar() {
           {user?.role === 'student' && (
             <>
               <NavLink to="/student/dashboard" style={({ isActive }) => navLinkStyle(isActive)}>Dashboard</NavLink>
+              <NavLink to="/courses" style={({ isActive }) => navLinkStyle(isActive)}>Courses</NavLink>
+              <NavLink to="/ai-tutor" style={({ isActive }) => navLinkStyle(isActive)}>AI Tutor</NavLink>
               <NavLink to="/tutors" style={({ isActive }) => navLinkStyle(isActive)}>Find Tutors</NavLink>
-              <NavLink to="/student/bookings" style={({ isActive }) => navLinkStyle(isActive)}>My Sessions</NavLink>
             </>
           )}
           {user?.role === 'tutor' && (

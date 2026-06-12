@@ -10,3 +10,6 @@ pub mod ai;
 pub mod blockchain;
 pub mod disputes;
 pub mod admin;
+pub mod courses;
+pub mod enrollments;
+pub mod credits;

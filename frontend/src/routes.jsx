@@ -25,6 +25,17 @@ import AdminBookings from './pages/AdminBookings';
 import AdminPayments from './pages/AdminPayments';
 import AdminDisputes from './pages/AdminDisputes';
 import AdminSettings from './pages/AdminSettings';
+import CourseCatalog from './pages/CourseCatalog';
+import CourseDetail from './pages/CourseDetail';
+import CoursePlayer from './pages/CoursePlayer';
+import AITutor from './pages/AITutor';
+import CertificateGallery from './pages/CertificateGallery';
+import CertificateVerify from './pages/CertificateVerify';
+import StudentCourses from './pages/StudentCourses';
+import StudentCredits from './pages/StudentCredits';
+import TutorCourses from './pages/TutorCourses';
+import CourseBuilder from './pages/CourseBuilder';
+import TutorApplication from './pages/TutorApplication';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -35,7 +46,34 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Landing /> },
       { path: 'tutors', element: <TutorListing /> },
+      { path: 'courses', element: <CourseCatalog /> },
+      { path: 'courses/:id', element: <CourseDetail /> },
+      { path: 'certificates/verify/:hash', element: <CertificateVerify /> },
     ],
+  },
+  {
+    path: '/courses/:id/learn/:moduleId',
+    element: (
+      <ProtectedRoute allowedRoles={['student', 'tutor', 'admin']}>
+        <CoursePlayer />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/ai-tutor',
+    element: (
+      <ProtectedRoute allowedRoles={['student', 'tutor', 'admin']}>
+        <AITutor />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/tutor/apply',
+    element: (
+      <ProtectedRoute allowedRoles={['tutor', 'student']}>
+        <TutorApplication />
+      </ProtectedRoute>
+    ),
   },
   {
     path: '/login',
@@ -70,10 +108,22 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: 'dashboard', element: <StudentDashboard /> },
+      { path: 'courses', element: <StudentCourses /> },
+      { path: 'credits', element: <StudentCredits /> },
+      { path: 'certificates', element: <CertificateGallery /> },
       { path: 'bookings', element: <StudentBookings /> },
       { path: 'profile', element: <StudentProfile /> },
       { path: 'settings', element: <StudentSettings /> },
     ],
+  },
+  {
+    path: '/certificates',
+    element: (
+      <ProtectedRoute allowedRoles={['student', 'tutor', 'admin']}>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
+    children: [{ index: true, element: <CertificateGallery /> }],
   },
   {
     path: '/tutor',
@@ -85,6 +135,9 @@ export const router = createBrowserRouter([
     children: [
       { path: 'dashboard', element: <TutorDashboard /> },
       { path: 'profile', element: <TutorProfilePage /> },
+      { path: 'courses', element: <TutorCourses /> },
+      { path: 'courses/new', element: <CourseBuilder /> },
+      { path: 'courses/:id/edit', element: <CourseBuilder /> },
       { path: 'sessions', element: <TutorSessions /> },
       { path: 'earnings', element: <TutorEarnings /> },
       { path: 'fellow-tutors', element: <TutorFellowTutors /> },
@@ -106,6 +159,8 @@ export const router = createBrowserRouter([
       { path: 'bookings', element: <AdminBookings /> },
       { path: 'payments', element: <AdminPayments /> },
       { path: 'disputes', element: <AdminDisputes /> },
+      { path: 'courses/new', element: <CourseBuilder /> },
+      { path: 'courses/:id/edit', element: <CourseBuilder /> },
       { path: 'settings', element: <AdminSettings /> },
     ],
   },

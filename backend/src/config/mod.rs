@@ -9,10 +9,18 @@ pub struct AppConfig {
     pub jwt_secret: String,
     pub jwt_expiry_hours: i64,
     pub groq_api_key: Option<String>,
+    pub anthropic_api_key: Option<String>,
     pub stellar_network: Option<String>,
     pub stellar_rpc_url: Option<String>,
     pub stellar_soroban_contract_id: Option<String>,
     pub custodial_master_secret: Option<String>,
+    pub stellar_admin_secret_key: Option<String>,
+    pub credit_ledger_contract: Option<String>,
+    pub certificate_contract: Option<String>,
+    pub course_payment_contract: Option<String>,
+    pub session_escrow_contract: Option<String>,
+    pub platform_fee_bps: u32,
+    pub ai_daily_free_limit: i64,
 }
 
 impl AppConfig {
@@ -32,10 +40,24 @@ impl AppConfig {
                 .parse()
                 .unwrap_or(24),
             groq_api_key: env::var("GROQ_API_KEY").ok(),
+            anthropic_api_key: env::var("ANTHROPIC_API_KEY").ok(),
             stellar_network: env::var("STELLAR_NETWORK").ok(),
             stellar_rpc_url: env::var("STELLAR_RPC_URL").ok(),
             stellar_soroban_contract_id: env::var("STELLAR_SOROBAN_CONTRACT_ID").ok(),
             custodial_master_secret: env::var("CUSTODIAL_MASTER_SECRET").ok(),
+            stellar_admin_secret_key: env::var("STELLAR_ADMIN_SECRET_KEY").ok(),
+            credit_ledger_contract: env::var("CREDIT_LEDGER_CONTRACT").ok(),
+            certificate_contract: env::var("CERTIFICATE_CONTRACT").ok(),
+            course_payment_contract: env::var("COURSE_PAYMENT_CONTRACT").ok(),
+            session_escrow_contract: env::var("SESSION_ESCROW_CONTRACT").ok(),
+            platform_fee_bps: env::var("PLATFORM_FEE_BPS")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(1500),
+            ai_daily_free_limit: env::var("AI_DAILY_FREE_LIMIT")
+                .ok()
+                .and_then(|v| v.parse().ok())
+                .unwrap_or(10),
         }
     }
 

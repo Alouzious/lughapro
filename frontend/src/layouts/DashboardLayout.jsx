@@ -9,12 +9,20 @@ import {
   UserCircle,
   CreditCard,
   AlertCircle,
-  BookOpen as GraduationCap,
+  Coins,
+  Award,
+  Sparkles,
+  GraduationCap,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const studentNav = [
   { to: '/student/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/courses', icon: BookOpen, label: 'Course Catalog' },
+  { to: '/student/courses', icon: GraduationCap, label: 'My Courses' },
+  { to: '/student/credits', icon: Coins, label: 'Credits & Levels' },
+  { to: '/student/certificates', icon: Award, label: 'Certificates' },
+  { to: '/ai-tutor', icon: Sparkles, label: 'AI Tutor' },
   { to: '/tutors', icon: Users, label: 'Find Tutors' },
   { to: '/student/bookings', icon: Calendar, label: 'My Bookings' },
   { to: '/student/profile', icon: UserCircle, label: 'Profile' },
@@ -24,6 +32,7 @@ const studentNav = [
 const tutorNav = [
   { to: '/tutor/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/tutor/profile', icon: UserCircle, label: 'My Profile' },
+  { to: '/tutor/courses', icon: GraduationCap, label: 'My Courses' },
   { to: '/tutor/fellow-tutors', icon: Users, label: 'Fellow Tutors' },
   { to: '/tutor/sessions', icon: Calendar, label: 'My Sessions' },
   { to: '/tutor/earnings', icon: CreditCard, label: 'Earnings' },
