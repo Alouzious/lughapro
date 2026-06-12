@@ -1,1 +1,358 @@
 @import "tailwindcss";
+
+/* ============================================================
+   LUGHAPRO BRAND TOKENS
+============================================================ */
+:root {
+  /* Core Palette */
+  --forest:    #0B5E47;
+  --jade:      #1A8C6A;
+  --mint:      #3DBFA0;
+  --pale:      #E8F5F0;
+  --cream:     #FAF8F3;
+  --sand:      #F2EDE4;
+  --gold:      #C9921A;
+  --amber:     #F4A830;
+  --rust:      #C0461E;
+  --night:     #0D1F1A;
+  --ink:       #1C2B26;
+  --slate:     #3D5048;
+  --mist:      #7A9089;
+  --fog:       #B8CCC5;
+
+  /* Shadows */
+  --shadow:    0 2px 16px rgba(11,94,71,0.10);
+  --shadow-lg: 0 8px 40px rgba(11,94,71,0.16);
+  --shadow-xl: 0 16px 64px rgba(11,94,71,0.20);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius:    14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  /* Typography */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', 'Courier New', monospace;
+}
+
+/* ============================================================
+   BASE RESET
+============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+============================================================ */
+.font-display { font-family: var(--font-display) !important; }
+.font-mono    { font-family: var(--font-mono) !important; }
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+}
+
+/* ============================================================
+   BRAND COLOR UTILITIES
+============================================================ */
+.bg-forest  { background-color: var(--forest); }
+.bg-jade    { background-color: var(--jade); }
+.bg-mint    { background-color: var(--mint); }
+.bg-pale    { background-color: var(--pale); }
+.bg-cream   { background-color: var(--cream); }
+.bg-sand    { background-color: var(--sand); }
+.bg-amber   { background-color: var(--amber); }
+.bg-night   { background-color: var(--night); }
+
+.text-forest { color: var(--forest); }
+.text-jade   { color: var(--jade); }
+.text-mint   { color: var(--mint); }
+.text-gold   { color: var(--gold); }
+.text-amber  { color: var(--amber); }
+.text-rust   { color: var(--rust); }
+.text-ink    { color: var(--ink); }
+.text-slate  { color: var(--slate); }
+.text-mist   { color: var(--mist); }
+.text-fog    { color: var(--fog); }
+
+/* ============================================================
+   BUTTON SYSTEM
+============================================================ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border-radius: 40px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  background: var(--forest);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 12px rgba(11,94,71,0.25);
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--jade);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(11,94,71,0.35);
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  border-radius: 40px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--forest);
+  background: transparent;
+  border: 1.5px solid var(--forest);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+.btn-ghost:hover {
+  background: var(--pale);
+}
+
+.btn-amber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border-radius: 40px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--night);
+  background: var(--amber);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(244,168,48,0.4);
+  text-decoration: none;
+}
+.btn-amber:hover {
+  background: #e89f28;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(244,168,48,0.5);
+}
+
+/* ============================================================
+   CARD SYSTEM
+============================================================ */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  border: 1.5px solid var(--sand);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================================
+   ANIMATIONS
+============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-up   { animation: fadeUp 0.5s ease both; }
+.animate-fade-in   { animation: fadeIn 0.4s ease both; }
+.animate-pulse-dot { animation: pulse 2s infinite; }
+
+/* Stagger delays */
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.3s; }
+.delay-4 { animation-delay: 0.4s; }
+.delay-5 { animation-delay: 0.5s; }
+
+/* ============================================================
+   TAG / PILL SYSTEM
+============================================================ */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: var(--pale);
+  color: var(--jade);
+}
+
+.tag-amber { background: rgba(201,146,26,0.12); color: var(--gold); }
+.tag-rust  { background: rgba(192,70,30,0.1);  color: var(--rust); }
+.tag-night { background: rgba(13,31,26,0.08);  color: var(--slate); }
+
+/* ============================================================
+   FORM INPUTS
+============================================================ */
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--fog);
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-field:focus {
+  border-color: var(--jade);
+}
+.input-field::placeholder {
+  color: var(--fog);
+}
+
+/* ============================================================
+   SIDEBAR SYSTEM (Dashboard)
+============================================================ */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.sidebar-link:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.85);
+}
+.sidebar-link.active {
+  background: rgba(61,191,160,0.15);
+  color: var(--mint);
+}
+
+/* ============================================================
+   STAT CARDS
+============================================================ */
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  border: 1.5px solid var(--sand);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--jade);
+}
+.stat-card.amber::before { background: var(--amber); }
+.stat-card.rust::before  { background: var(--rust); }
+.stat-card.mint::before  { background: var(--mint); }
+
+/* ============================================================
+   PROGRESS BAR
+============================================================ */
+.progress-wrap {
+  background: var(--fog);
+  border-radius: 40px;
+  height: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 40px;
+  background: linear-gradient(90deg, var(--jade) 0%, var(--mint) 100%);
+  transition: width 1s ease;
+}
+
+/* ============================================================
+   HERO SLIDER
+============================================================ */
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+  background-size: cover;
+  background-position: center;
+}
+.hero-slide.active {
+  opacity: 1;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sand);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--fog);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mist);
+}
